@@ -2,6 +2,7 @@ var gulp = require("gulp");
 var sass = require('gulp-sass')(require('sass'));
 var browserSync = require('browser-sync');
 var reload = browserSync.reload;
+var autoprefixer = require('gulp-autoprefixer');
 
 var SOURCEPATH = {
     sassSource : 'src/scss/*.scss'
