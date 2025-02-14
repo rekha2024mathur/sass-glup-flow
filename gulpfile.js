@@ -1,28 +1,47 @@
 var gulp = require("gulp");
 var sass = require('gulp-sass')(require('sass'));
-var browserSync = require('browser-sync');
+var browserSync = require('browser-sync').create();
+
 var reload = browserSync.reload;
 
 var SOURCEPATH = {
     sassSource : 'src/scss/*.scss'
+
 };
 
 var APPPATH = {
     root: 'app/',
     css: 'app/css',
     js: 'app/js'
+
 }
 
-gulp.task('sass', function(){
+function style() {
+    // 1. Where is my SCSS file.
     return gulp.src(SOURCEPATH.sassSource)
-        .pipe(sass({ outputStyle:'expanded'}).on('error', sass.logError))
-        .pipe(gulp.dest(APPPATH.css));
-});
+    // 2. Pass that file through SCSS compiler.
+    .pipe(sass())
+    // 3.  Where do I save the compiled CSS.
+    .pipe(gulp.dest(APPPATH.css))
+    // Stream changes to all browsers.
+    .pipe(browserSync.stream())
+}
 
-gulp.task('serve', gulp.series( 'sass', function() {
-    browserSync.init([APPPATH.css + '/*.css', APPPATH.root + '/*.html', APPPATH.js + '/*.js'], {
+function watch() {
+    browserSync.init({
         server: {
-            baseDir: APPPATH.root
+            baseDir: "./app"
         }
-    })
-}));
+    });
+    gulp.watch(SOURCEPATH.sassSource, style);
+    gulp.watch(APPPATH.root + '*.html').on( 'change', browserSync.reload);
+    gulp.watch(APPPATH.root + '*.js').on( 'change', browserSync.reload);
+}
+
+// exports.style = style;
+// exports.watch = watch;
+// Above statement can be written as follows in more common syntax too.
+
+gulp.task( 'style',  style);
+gulp.task( 'watch',  watch);
+
