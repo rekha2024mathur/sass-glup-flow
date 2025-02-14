@@ -20,5 +20,8 @@
   "bugs": {
     "url": "https://github.com/rekha2024mathur/sass-glup-flow/issues"
   },
-  "homepage": "https://github.com/rekha2024mathur/sass-glup-flow#readme"
+  "homepage": "https://github.com/rekha2024mathur/sass-glup-flow#readme",
+  "devDependencies": {
+    "gulp": "^5.0.0"
+  }
 }
