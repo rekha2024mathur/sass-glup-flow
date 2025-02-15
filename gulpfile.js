@@ -1,21 +1,18 @@
 var gulp = require("gulp");
 var sass = require('gulp-sass')(require('sass'));
 var browserSync = require('browser-sync').create();
-// var autoprefixer = require('gulp-autoprefixer'); // Not supported in newer version.
-// import autoprefixer from 'gulp-autoprefixer';
 var clean = require('gulp-clean');
-
 
 var SOURCEPATH = {
     sassSource : 'src/scss/*.scss',
-    htmlSource: 'src/*.html'
+    htmlSource: 'src/*.html',
+    jsSource: 'src/js/**'
 };
 
 var APPPATH = {
     root: 'app/',
     css: 'app/css',
-    js: 'app/js'
-
+    js: 'app/js/'
 }
 
 function clean_html() {
@@ -26,6 +23,16 @@ function clean_html() {
 function copy() {
     return gulp.src(SOURCEPATH.htmlSource)
         .pipe(gulp.dest(APPPATH.root))
+}
+
+function clean_scritps() {
+    return gulp.src(APPPATH.js + '*.js', {read:false})
+        .pipe(clean());
+}
+
+function copy_scripts() {
+    return gulp.src(SOURCEPATH.jsSource)
+        .pipe(gulp.dest(APPPATH.js))
 }
 
 function style() {
@@ -41,7 +48,6 @@ function style() {
 }
 
 function watch() {
-    // console.log('inside watch!!');
     browserSync.init({
         server: {
             baseDir: "./app"
@@ -49,10 +55,10 @@ function watch() {
     });
 
     gulp.watch(SOURCEPATH.sassSource, style);
-
-    gulp.watch(SOURCEPATH.htmlSource, clean_html);
+    gulp.watch(SOURCEPATH.jsSource, clean_scritps);
+    gulp.watch(SOURCEPATH.jsSource, copy_scripts);
+    gulp.watch(SOURCEPATH.htmlSource, clean_html)
     gulp.watch(SOURCEPATH.htmlSource, copy);
-   
     gulp.watch(APPPATH.root + '*.html').on( 'change', browserSync.reload);
     gulp.watch(APPPATH.root + '*.js').on( 'change', browserSync.reload);
     
@@ -61,11 +67,6 @@ function watch() {
 // exports.style = style;
 // exports.watch = watch;
 // Above statement can be written as follows in more common syntax too.
-
-
-// gulp.task( 'copy',  copy);
-// gulp.task( 'style',  style);
-// gulp.task( 'clean_html',  clean_html);
 gulp.task( 'watch', watch);
 // gulp.task( 'default', watch );
 
