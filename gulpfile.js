@@ -3,6 +3,8 @@ var sass = require('gulp-sass')(require('sass'));
 var browserSync = require('browser-sync').create();
 // var autoprefixer = require('gulp-autoprefixer'); // Not supported in newer version.
 // import autoprefixer from 'gulp-autoprefixer';
+var clean = require('gulp-clean');
+
 
 var SOURCEPATH = {
     sassSource : 'src/scss/*.scss',
@@ -16,8 +18,12 @@ var APPPATH = {
 
 }
 
+function clean_html() {
+    return gulp.src(APPPATH.root + '*.html', {read:false})
+        .pipe(clean());
+}
+
 function copy() {
-    console.log('copy Called!!!');
     return gulp.src(SOURCEPATH.htmlSource)
         .pipe(gulp.dest(APPPATH.root))
 }
@@ -43,7 +49,10 @@ function watch() {
     });
 
     gulp.watch(SOURCEPATH.sassSource, style);
+
+    gulp.watch(SOURCEPATH.htmlSource, clean_html);
     gulp.watch(SOURCEPATH.htmlSource, copy);
+   
     gulp.watch(APPPATH.root + '*.html').on( 'change', browserSync.reload);
     gulp.watch(APPPATH.root + '*.js').on( 'change', browserSync.reload);
     
@@ -53,7 +62,10 @@ function watch() {
 // exports.watch = watch;
 // Above statement can be written as follows in more common syntax too.
 
+
 // gulp.task( 'copy',  copy);
 // gulp.task( 'style',  style);
-gulp.task( 'watch',  watch);
+// gulp.task( 'clean_html',  clean_html);
+gulp.task( 'watch', watch);
+// gulp.task( 'default', watch );
 
