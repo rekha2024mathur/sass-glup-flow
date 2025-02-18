@@ -3,6 +3,8 @@ var sass = require('gulp-sass')(require('sass'));
 var browserSync = require('browser-sync').create();
 var clean = require('gulp-clean');
 var concat = require('gulp-concat');
+var mergeStream = require('ordered-read-streams');
+
 
 var SOURCEPATH = {
     sassSource : 'src/scss/*.scss',
@@ -38,7 +40,18 @@ function copy_scripts() {
 }
 
 function style() {
-    // 1. Where is my SCSS file.
+    
+    var boostrap = gulp.src('./node_modules/bootstrap/dist/css/bootstrap.css');
+    var sassFiles;
+    sassFiles = gulp.src(SOURCEPATH.sassSource)
+            .pipe(sass());
+
+    return mergeStream([boostrap,sassFiles])
+        .pipe(concat('app.css'))
+        .pipe(gulp.dest(APPPATH.css))
+        .pipe(browserSync.stream())
+
+   /* // 1. Where is my SCSS file.
     return gulp.src(SOURCEPATH.sassSource)
     // 2. Pass that file through SCSS compiler.
     .pipe(sass())
@@ -46,7 +59,8 @@ function style() {
     // 3.  Where do I save the compiled CSS.
     .pipe(gulp.dest(APPPATH.css))
     // Stream changes to all browsers.
-    .pipe(browserSync.stream())
+    .pipe(browserSync.stream())*/
+   
 }
 
 function watch() {
@@ -57,6 +71,7 @@ function watch() {
     });
 
     gulp.watch(SOURCEPATH.sassSource, style);
+    // gulp.watch(APPPATH.css + '/*.css').on( 'change', browserSync.reload);
     gulp.watch(SOURCEPATH.jsSource, clean_scritps);
     gulp.watch(SOURCEPATH.jsSource, copy_scripts);
     gulp.watch(SOURCEPATH.htmlSource, clean_html)
