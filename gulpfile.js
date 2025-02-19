@@ -6,6 +6,8 @@ var concat = require('gulp-concat');
 var mergeStream = require('ordered-read-streams');
 var newer = require('gulp-newer');
 // var imagemin = require('gulp-imagemin');
+const minify = require('gulp-minify');
+
 
 var injectPartials = require('gulp-inject-partials');
 
@@ -43,6 +45,13 @@ function clean_scritps() {
 function copy_scripts() {
     return gulp.src(SOURCEPATH.jsSource)
         .pipe(concat('main.js'))
+        .pipe(gulp.dest(APPPATH.js))
+}
+
+function compress() {
+    return gulp.src(SOURCEPATH.jsSource)
+        .pipe(concat('main.js'))
+        .pipe(minify())
         .pipe(gulp.dest(APPPATH.js))
 }
 
@@ -111,5 +120,6 @@ function watch() {
 // exports.style = style;
 // exports.watch = watch;
 // Above statement can be written as follows in more common syntax too.
+gulp.task( 'compress', compress);
 gulp.task( 'watch', watch);
 // gulp.task( 'default', watch );
