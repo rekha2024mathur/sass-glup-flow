@@ -12,6 +12,7 @@ const minify = require('gulp-minify');
 var injectPartials = require('gulp-inject-partials');
 var cleancss = require('gulp-clean-css');
 var rename = require('gulp-rename');
+var htmlmin = require('gulp-htmlmin');
 
 
 var SOURCEPATH = {
@@ -68,6 +69,13 @@ function image(){
 function html() {
     return gulp.src(SOURCEPATH.htmlSource)
         .pipe(injectPartials())
+        .pipe(gulp.dest(APPPATH.root))
+}
+
+function minifyHtml() {
+    return gulp.src(SOURCEPATH.htmlSource)
+        .pipe(injectPartials())
+        .pipe(htmlmin({collapseWhitespace:true}))
         .pipe(gulp.dest(APPPATH.root))
 }
 
@@ -141,4 +149,5 @@ function watch() {
 gulp.task( 'compress', compress);
 gulp.task( 'watch', watch);
 gulp.task( 'compresscss', compresscss);
+gulp.task( 'minifyHtml', minifyHtml);
 // gulp.task( 'default', watch );
