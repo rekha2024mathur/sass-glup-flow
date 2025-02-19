@@ -5,7 +5,7 @@ var clean = require('gulp-clean');
 var concat = require('gulp-concat');
 var mergeStream = require('ordered-read-streams');
 var newer = require('gulp-newer');
-var imagemin = require('gulp-imagemin');
+// var imagemin = require('gulp-imagemin');
 
 
 var SOURCEPATH = {

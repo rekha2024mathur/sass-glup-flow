@@ -1,1 +1,1 @@
-console.log('footer.js');
+console.log('footer1.js');
