@@ -150,4 +150,7 @@ gulp.task( 'compress', compress);
 gulp.task( 'watch', watch);
 gulp.task( 'compresscss', compresscss);
 gulp.task( 'minifyHtml', minifyHtml);
+
+gulp.task( 'production', gulp.series('compress', 'compresscss', 'minifyHtml'));
+
 // gulp.task( 'default', watch );
