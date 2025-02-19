@@ -7,10 +7,13 @@ var mergeStream = require('ordered-read-streams');
 var newer = require('gulp-newer');
 // var imagemin = require('gulp-imagemin');
 
+var injectPartials = require('gulp-inject-partials');
+
 
 var SOURCEPATH = {
     sassSource : 'src/scss/*.scss',
     htmlSource: 'src/*.html',
+    htmlPartialsSrc: 'src/partials/*.html',
     jsSource: 'src/js/**',
     imgSource: 'src/img/**'
 };
@@ -19,7 +22,7 @@ var APPPATH = {
     root: 'app/',
     css: 'app/css',
     js: 'app/js/',
-    img:'app/img'
+    img:'app/img',
 }
 
 function clean_html() {
@@ -27,10 +30,10 @@ function clean_html() {
         .pipe(clean());
 }
 
-function copy() {
-    return gulp.src(SOURCEPATH.htmlSource)
-        .pipe(gulp.dest(APPPATH.root))
-}
+// function copy() {
+//     return gulp.src(SOURCEPATH.htmlSource)
+//         .pipe(gulp.dest(APPPATH.root))
+// }
 
 function clean_scritps() {
     return gulp.src(APPPATH.js + '*.js', {read:false})
@@ -49,6 +52,14 @@ function image(){
         .pipe(imagemin())
         .pipe(gulp.dest(APPPATH.img))
 }
+
+
+function html() {
+    return gulp.src(SOURCEPATH.htmlSource)
+        .pipe(injectPartials())
+        .pipe(gulp.dest(APPPATH.root))
+}
+
 
 function style() {
     
@@ -82,14 +93,16 @@ function watch() {
     });
 
     gulp.watch(SOURCEPATH.sassSource, style);
-    gulp.watch(SOURCEPATH.sassSource, style);
+    // gulp.watch(SOURCEPATH.sassSource, style);
     // gulp.watch(SOURCEPATH.imgSource, image); // No success by require.
 
     // gulp.watch(APPPATH.css + '/*.css').on( 'change', browserSync.reload);
     gulp.watch(SOURCEPATH.jsSource, clean_scritps);
     gulp.watch(SOURCEPATH.jsSource, copy_scripts);
     gulp.watch(SOURCEPATH.htmlSource, clean_html)
-    gulp.watch(SOURCEPATH.htmlSource, copy);
+    // gulp.watch(SOURCEPATH.htmlSource, copy);
+    gulp.watch(SOURCEPATH.htmlSource, html);
+    gulp.watch(SOURCEPATH.htmlPartialsSrc, html);
     gulp.watch(APPPATH.root + '*.html').on( 'change', browserSync.reload);
     gulp.watch(APPPATH.root + '*.js').on( 'change', browserSync.reload);
     
