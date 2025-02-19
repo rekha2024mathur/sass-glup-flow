@@ -4,18 +4,22 @@ var browserSync = require('browser-sync').create();
 var clean = require('gulp-clean');
 var concat = require('gulp-concat');
 var mergeStream = require('ordered-read-streams');
+var newer = require('gulp-newer');
+var imagemin = require('gulp-imagemin');
 
 
 var SOURCEPATH = {
     sassSource : 'src/scss/*.scss',
     htmlSource: 'src/*.html',
-    jsSource: 'src/js/**'
+    jsSource: 'src/js/**',
+    imgSource: 'src/img/**'
 };
 
 var APPPATH = {
     root: 'app/',
     css: 'app/css',
-    js: 'app/js/'
+    js: 'app/js/',
+    img:'app/img'
 }
 
 function clean_html() {
@@ -37,6 +41,13 @@ function copy_scripts() {
     return gulp.src(SOURCEPATH.jsSource)
         .pipe(concat('main.js'))
         .pipe(gulp.dest(APPPATH.js))
+}
+
+function image(){
+    return gulp.src(SOURCEPATH.imgSource)
+        .pipe(APPPATH.img)
+        .pipe(imagemin())
+        .pipe(gulp.dest(APPPATH.img))
 }
 
 function style() {
@@ -71,6 +82,9 @@ function watch() {
     });
 
     gulp.watch(SOURCEPATH.sassSource, style);
+    gulp.watch(SOURCEPATH.sassSource, style);
+    // gulp.watch(SOURCEPATH.imgSource, image); // No success by require.
+
     // gulp.watch(APPPATH.css + '/*.css').on( 'change', browserSync.reload);
     gulp.watch(SOURCEPATH.jsSource, clean_scritps);
     gulp.watch(SOURCEPATH.jsSource, copy_scripts);
