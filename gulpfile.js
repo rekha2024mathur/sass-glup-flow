@@ -10,6 +10,8 @@ const minify = require('gulp-minify');
 
 
 var injectPartials = require('gulp-inject-partials');
+var cleancss = require('gulp-clean-css');
+var rename = require('gulp-rename');
 
 
 var SOURCEPATH = {
@@ -94,6 +96,22 @@ function style() {
    
 }
 
+
+function compresscss() {
+    
+    var boostrap = gulp.src('./node_modules/bootstrap/dist/css/bootstrap.css');
+    var sassFiles;
+    sassFiles = gulp.src(SOURCEPATH.sassSource)
+            .pipe(sass());
+
+    return mergeStream([boostrap,sassFiles])
+        .pipe(concat('app.css'))
+        .pipe(cleancss())
+        .pipe(rename({suffix: '.min'}))
+        .pipe(gulp.dest(APPPATH.css))
+        .pipe(browserSync.stream())
+}
+
 function watch() {
     browserSync.init({
         server: {
@@ -122,4 +140,5 @@ function watch() {
 // Above statement can be written as follows in more common syntax too.
 gulp.task( 'compress', compress);
 gulp.task( 'watch', watch);
+gulp.task( 'compresscss', compresscss);
 // gulp.task( 'default', watch );
